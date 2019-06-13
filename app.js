@@ -36,27 +36,26 @@ io.on('connection', socket => {
     if(users.includes(username)) {
       io.emit('login', {code: 0, msg: '该用户已存在'})
     } else {
-      socket.join(roomName, () => {
-        let color = colors[Math.floor((Math.random()*colors.length))]
-        socket.name = username
-        users.push({
-          username: username,
-          color: color
-        })
-        
-        // let room = Object.keys(socket.rooms)[1]
-        // console.log(room);
-        io.to(roomName).emit('uses', {users: users})
-        // socket.broadcast.emit('uses', {users: users})
-        socket.emit('login', {
-          code: 1,
-          msg: '登录成功',
-          username: username,
-          color: color,
-          users: users
-        })
-      })
+      socket.join(roomName)
 
+      let color = colors[Math.floor((Math.random()*colors.length))]
+      socket.name = username
+      users.push({
+        username: username,
+        color: color
+      })
+      
+      // let room = Object.keys(socket.rooms)[1]
+      // console.log(room);
+      io.to(roomName).emit('uses', {users: users})
+      // socket.broadcast.emit('uses', {users: users})
+      socket.emit('login', {
+        code: 1,
+        msg: '登录成功',
+        username: username,
+        color: color,
+        users: users
+      })
     }
   })
 
