@@ -2,7 +2,9 @@
 基于express、socket.io搭建的一个简易的聊天室
 
 ## [demo](http://chat.watasi.cn)
-![chat](http://qicloud.jswei.cn/chat.gif)
+![chat1](http://qicloud.jswei.cn/chat1.gif)
+![chat2](http://qicloud.jswei.cn/chat2.gif)
+![chat3](http://qicloud.jswei.cn/chat3.gif)
 
 ## 遇到的坑
 
