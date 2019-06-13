@@ -13,7 +13,8 @@ let colors = [
 
 
 app.get('/', (req, res) => {
-  res.send(`<h1>Welcome Chat</h1>`)
+  res.setHeader('Content-Type', 'text/html')
+  res.sendfile('./public/index.html')
 })
 
 app.get('/public', (req, res) => {
