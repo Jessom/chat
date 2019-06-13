@@ -49,13 +49,13 @@ io.on('connection', socket => {
       // console.log(room);
       io.to(roomName).emit('uses', {users: users})
       // socket.broadcast.emit('uses', {users: users})
-      socket.emit('login', {
+      /* socket.emit('login', {
         code: 1,
         msg: '登录成功',
         username: username,
         color: color,
         users: users
-      })
+      }) */
     }
   })
 

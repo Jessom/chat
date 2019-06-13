@@ -145,6 +145,15 @@
     socket.emit('login', {
       username: username
     });
+
+    $('#exit').show();
+    $('#message-box').show();
+    $('#login-wrap').hide();
+
+    ui = {
+      username: username,
+      color: '#f60'
+    }
   }
 
   socket.on('login', function(res) {
