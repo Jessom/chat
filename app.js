@@ -27,8 +27,8 @@ app.get('/public/index.html', (req, res) => {
   res.sendfile('./public/index.html')
 })
 
+let roomName = 'room'
 io.on('connection', socket => {
-  let roomName = 'room'
 
   // 登录
   socket.on('login', data => {
