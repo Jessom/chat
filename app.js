@@ -1,12 +1,6 @@
 const app = require('express')()
 const http = require('http').Server(app)
-const io = require('socket.io')(http, {
-  "socket.io": {
-    "url": "http://chat.watasi.cn",
-    "transports": ["websocket", "polling"],
-    "address": "http://chat.watasi.cn"
-  }
-})
+const io = require('socket.io')(http)
 const port = 3005
 
 let users = [];     // 记录所有登录的用户

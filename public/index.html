@@ -99,7 +99,9 @@
 <script src="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script src="https://cdn.bootcss.com/socket.io/2.2.0/socket.io.js"></script>
 <script>
-  var socket = io('ws://chat.watasi.cn');
+  var socket = io({
+    "transports": ['websocket']
+  });
   var ui = {
     username: '',
     color: ''
