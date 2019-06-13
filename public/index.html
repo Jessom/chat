@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>chat</title>
+  <link href="https://cdn.bootcss.com/font-awesome/5.8.2/css/fontawesome.min.css" rel="stylesheet">
+  <link href="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+  html, body { height: 100%; }
+  .clearfix:after, .clearfix:before { content: ""; display: table; }
+  .clearfix:after { clear: both; }
+  .fl { float: left; }
+  .fr { float: right; }
+  body { background: transparent url('http://music.watasi.cn/chat_bg.jpg') center / cover no-repeat; }
+
+  .ccc { background-color: rgba(0, 0, 0, .3); }
+  .wrap { position: relative; height: 100vh; }
+  .message-wrap { background-color: rgba(255, 255, 255, .3); height: 400px; overflow-y: scroll; border-radius: 5px; padding: 10px 15px; }
+  .flex { display: flex; flex-direction: column; justify-content: center; align-items: center; }
+  .mt20 { margin-top: 20px; }
+  .textarea { background-color: rgba(255, 255, 255, .5); resize: none; }
+  .list-group { background-color: rgba(255, 255, 255, .4); border-radius: 4px; overflow: hidden; }
+  .list-group-item { background-color: transparent; border: none; }
+
+  .message-item { padding: 10px 0; }
+  .message-item .avatar { display: inline-block; width: 40px; height: 40px; text-align: center; line-height: 40px; border-radius: 50%; color: #fff; background-color: #eb5440; font-size: 16px; }
+  .message-item .message-content { line-height: 1.5; margin-left: 5px; }
+  .message-item .message-content p { margin: 0; }
+  .message-item .message-content .name { font-size: 13px; }
+  .message-item .message-content .txt { font-size: 15px; }
+
+  #exit { position: absolute; top: 10px; right: 20%; }
+
+  #message-box, #exit { display: none; }
+
+  .myself { text-align: right; }
+  .myself .avatar, .myself .message-content { float: right; }
+  .myself .message-content { margin-right: 5px; margin-left: 0; }
+
+  .row { margin: 0; }
+  </style>
+</head>
+<body>
+  
+  <div class="row ccc">
+    <div class="wrap col-lg-8 col-md-8 col-sm-10 col-xs-12 col-lg-offset-2 col-md-offset-2 col-sm-offset-1">
+      <button type="button" class="btn btn-danger" id='exit'>退出</button>
+  
+      <div class="row flex" style="height: 100vh;">
+        <!-- 渲染消息 -->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+          <div class="row">
+            <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12">
+              <ul class="list-group" id='users'>
+              </ul>
+            </div>
+  
+            <div class="col-lg-10 col-md-10 col-sm-12 col-xs-12">
+              <div class="message-wrap" id='mw'>
+                
+              </div>
+            </div>
+          </div>
+  
+        </div>
+  
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 mt20">
+          <!-- <input
+            type="text"
+            class="form-control textarea"
+            placeholder="【回车】发送消息"
+            id='message-box'> -->
+          <textarea
+            class="form-control textarea"
+            placeholder="【回车】发送消息"
+            rows="3"
+            id='message-box'></textarea>
+  
+          <div style="width: 40%" id='login-wrap'>
+            <div class="input-group">
+              <input type="text" id='username' class="form-control" placeholder="请输入用户名">
+              <span class="input-group-btn">
+                <button class="btn btn-default" type="button" id='login-btn'>登录</button>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+<script src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdn.bootcss.com/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdn.bootcss.com/socket.io/2.2.0/socket.io.js"></script>
+<script>
+  var socket = io();
+  var ui = {
+    username: '',
+    color: ''
+  }
+
+  $('#login-btn').click(login);
+
+  $('#exit').click(function() {
+    socket.emit('logout')
+    localStorage.clear();
+    $('#exit').hide();
+    $('#message-box').hide();
+    $('#login-wrap').show();
+  })
+
+  $('#message-box').keypress(function(e) {
+    if(e.keyCode === 13) {
+      var msg = $(this).val();
+      if(!msg) {
+        alert('输入消息内容')
+        return
+      }
+
+      socket.emit('msg', msg)
+
+      $(this).val('')
+      $(this).focus();
+
+      // renderMsg({ ...ui, msg }, 1)
+    }
+  })
+
+  // 登录
+  function login() {
+    var username = $('#username').val();
+    if(!username) {
+      alert('请输入用户名');
+      return;
+    }
+
+    socket.emit('login', {
+      username: username
+    });
+  }
+
+  socket.on('login', function(res) {
+    if(res.code === 1) {
+      renderUser(res.users);
+
+      ui = {
+        username: res.username,
+        color: res.color
+      }
+
+      $('#exit').show();
+      $('#message-box').show();
+      $('#login-wrap').hide();
+    } else if(res.code === 0) {
+      alert('登录失败')
+    }
+  })
+
+  socket.on('uses', function(res) {
+    renderUser(res.users);
+  })
+
+  // 有人退出
+  socket.on('logout', function(res) {
+    renderUser(res.users);
+  })
+
+  socket.on('msg', function(res) {
+    renderMsg(res, 0)
+  })
+
+  /**
+   * flag  0广播  1自己
+   */
+  function renderMsg(res, flag) {
+    var fn = res.username.charAt(0);
+    var cls = res.username == ui.username ? "myself" : "";
+    var html = '<div class="message-item clearfix '+ cls +'">'
+    html += '<div class="avatar fl" style="background-color: '+ res.color +';">' + fn + '</div>'
+    html += '<div class="fl message-content">'
+    html += '<p class="name">'+ res.username +'</p>'
+    html += '<p class="txt">'+ res.msg +'</p>'
+    html += '</div></div>'
+
+    $('#mw').append(html);
+    
+    var scroll = document.querySelector('#mw').scrollHeight
+    $('#mw').animate({ scrollTop: scroll }, 400)
+  }
+
+  function renderUser(users) {
+    var html = "";
+    for(var i=0; i<users.length; i++) {
+      html += '<li class="list-group-item">'+ users[i].username +'</li>';
+    }
+    $('#users').html(html);
+  }
+</script>
+</body>
+</html>

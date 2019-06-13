@@ -1,0 +1,27 @@
+{
+  "name": "chat",
+  "version": "1.0.0",
+  "description": "node websocket chat",
+  "main": "app.js",
+  "scripts": {
+    "test": "nodemon start"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Jessom/chat.git"
+  },
+  "keywords": [
+    "chat",
+    "websocket"
+  ],
+  "author": "watasi",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Jessom/chat/issues"
+  },
+  "homepage": "https://github.com/Jessom/chat#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.2.0"
+  }
+}
