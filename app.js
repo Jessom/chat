@@ -44,8 +44,9 @@ io.on('connection', socket => {
           color: color
         })
         
-        let room = Object.keys(socket.rooms)[1]
-        io.to(room).emit('uses', {users: users})
+        // let room = Object.keys(socket.rooms)[1]
+        // console.log(room);
+        io.to(roomName).emit('uses', {users: users})
         // socket.broadcast.emit('uses', {users: users})
         socket.emit('login', {
           code: 1,
@@ -82,8 +83,8 @@ io.on('connection', socket => {
   socket.on('msg', data => {
     if(!!socket.name) {
       let su = users.find(c => c.username === socket.name)
-      let room = Object.keys(socket.rooms)[1]
-      io.to(room).emit('msg', { ...su, msg: data })
+      // let room = Object.keys(socket.rooms)[1]
+      io.to(roomName).emit('msg', { ...su, msg: data })
       // socket.broadcast.emit('msg', { ...su, msg: data })
     }
   })
