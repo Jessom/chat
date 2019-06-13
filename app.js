@@ -1,7 +1,7 @@
 const app = require('express')()
 const http = require('http').Server(app)
 const io = require('socket.io')(http)
-const port = 3000
+const port = 3005
 
 let users = [];     // 记录所有登录的用户
 let colors = [
