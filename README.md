@@ -73,3 +73,9 @@ server {
   }
 }
 ```
+
+### pm2 start app.js --name="chat" -i 4
+会出现无法正常进入房间问题 <br>
+```bash
+pm2 start app.js --name="caht"
+```
